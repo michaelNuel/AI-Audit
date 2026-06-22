@@ -33,7 +33,22 @@ func main() {
 		os.Exit(1) //Exists the program with status code 1 indicating the error 
  	}
 
+
+
 	//OutPut values to confirm they work
 	fmt.Printf("Scanning directory: %s\n", dir)
+
+	files, err := scanDirectory(dir)
+	if err != nil {
+		fmt.Printf("Error scanning directory: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Found %d source files to audit.\n", len(files))
+
+		// Loop through files and print their paths (using %s and len)
+	for i, file := range files {
+		fmt.Printf("  [%d] File: %s (%d bytes)\n", i+1, file.Path, len(file.Content))
+	}
+	
 	fmt.Printf("API key loaded successfully! length: %d characters\n", len(apiKey))
 }
