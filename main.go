@@ -50,5 +50,5 @@ func main() {
 		fmt.Printf("  [%d] File: %s (%d bytes)\n", i+1, file.Path, len(file.Content))
 	}
 	
-	fmt.Printf("API key loaded successfully! length: %d characters\n", len(apiKey))
+	
 }
