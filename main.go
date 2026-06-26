@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	"flag"
@@ -11,29 +11,25 @@ func main() {
 	dirPtr := flag.String("dir", ".", "The directory to scan for code auditing")
 	keyPtr := flag.String("key", "", "Your Gemini API Key (can also be set via GEMINI_API_KEY env variable)")
 
-	//parse flag to the terminal 
+	//parse flag to the terminal
 	flag.Parse()
-
 
 	// Retrieve values (deferencing pointers)
 	dir := *dirPtr
 	apiKey := *keyPtr
 
-	//Validate flag values 
+	//Validate flag values
 
 	if apiKey == "" {
 		//If flag is empty, check the enviroment variables
-		apiKey = os.Getenv("GEMINI_API_KEY") 
+		apiKey = os.Getenv("GEMINI_API_KEY")
 	}
 
-
 	if apiKey == "" {
-		fmt.Println("Error: Gemini API Key is required. Set it using the -key flag or GEMINI_API_KEY environment variable.") 
+		fmt.Println("Error: Gemini API Key is required. Set it using the -key flag or GEMINI_API_KEY environment variable.")
 		flag.Usage() // Prints the default help message listing all flags
-		os.Exit(1) //Exists the program with status code 1 indicating the error 
- 	}
-
-
+		os.Exit(1)   //Exists the program with status code 1 indicating the error
+	}
 
 	//OutPut values to confirm they work
 	fmt.Printf("Scanning directory: %s\n", dir)
@@ -45,10 +41,28 @@ func main() {
 	}
 	fmt.Printf("Found %d source files to audit.\n", len(files))
 
-		// Loop through files and print their paths (using %s and len)
-	for i, file := range files {
-		fmt.Printf("  [%d] File: %s (%d bytes)\n", i+1, file.Path, len(file.Content))
+	// Loop through files and print their paths (using %s and len)
+	// for i, file := range files {
+	// 	fmt.Printf("  [%d] File: %s (%d bytes)\n", i+1, file.Path, len(file.Content))
+	// }
+
+	if len(files) == 0 {
+		fmt.Println("No files found to scan.Exiting")
+		return
 	}
-	
-	
+
+	// For now, let's just audit the first file we find to test the API connection
+
+	firstFile := files[0]
+	fmt.Printf("\n--- Auditing first file: %s ---\n", firstFile.Path)
+
+	auditResult, err := auditFile(apiKey, firstFile)
+	if err != nil {
+		fmt.Printf("Error auditing file: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Audit Result:")
+	fmt.Println(auditResult)
+
 }
